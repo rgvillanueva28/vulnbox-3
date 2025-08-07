@@ -1,4 +1,5 @@
 // pages/unauthorized.tsx
+import Head from "next/head";
 import Link from "next/link";
 
 export default function Unauthorized({ query }: any) {
@@ -6,6 +7,7 @@ export default function Unauthorized({ query }: any) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center">
+      <Head><title>Unauthorized | Middleware</title></Head>
       <h1 className="text-2xl font-bold text-red-600">🚫 Access Denied</h1>
       <p>{reason}</p>
       <div className="mt-4 space-x-4">

@@ -6,6 +6,7 @@ import { jwtVerify } from "jose";
 const PUBLIC_FILE = /\.(.*)$/;
 const AUTH_PAGES = ["/login", "/register"];
 const PROTECTED_ADMIN_ROUTE = "/dashboard";
+const PROTECTED_API_ROUTE = "/api/auth/flag-is-here";
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -20,7 +21,7 @@ export async function middleware(req: NextRequest) {
     try {
       const { payload } = await jwtVerify(
         token,
-        new TextEncoder().encode(process.env.JWT_SECRET)
+        new TextEncoder().encode(process.env.JWT_SECRET as string)
       );
       user = payload;
     } catch (err) {
@@ -33,8 +34,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // /dashboard access control
-  if (pathname === PROTECTED_ADMIN_ROUTE) {
+  // Admin route access control
+  if (pathname === PROTECTED_ADMIN_ROUTE || pathname === PROTECTED_API_ROUTE) {
     if (!user) {
       return NextResponse.rewrite(
         new URL("/unauthorized?reason=Please+login+or+register+to+access+this+page", req.url)
@@ -52,5 +53,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/login", "/register"],
+  matcher: ["/dashboard", "/login", "/register", "/api/auth/flag-is-here"],
 };

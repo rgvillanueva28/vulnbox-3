@@ -3,18 +3,18 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-
 COPY . .
 RUN npm install
-
-
-RUN npx prisma generate
-#RUN npx prisma migrate deploy
-#RUN npx prisma db seed
 
 # Build the Next.js app
 RUN npm run build
 
-EXPOSE 3123
+# Copy the entrypoint script into the container
+COPY docker-entrypoint.sh .
+RUN chmod +x docker-entrypoint.sh
 
+# Use the entrypoint script
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+# The default command to be executed by the entrypoint script
 CMD ["npm", "run", "start"]

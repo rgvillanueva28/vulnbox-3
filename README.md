@@ -1,14 +1,23 @@
-# 🔐 Next.js Auth App with PostgreSQL & JWT
+# Man-in-the-middle
 
-A full-featured authentication system using **Next.js**, **PostgreSQL**, **Tailwind CSS**, **Prisma**, and **JWT (stored in HTTP-only cookies)**.
+This application is named Man-in-the middle because it contains a vulnerability in Next.JS middleware and the flag is in the API call.
 
-Includes:
-- User registration & login
-- Admin-only `/dashboard` route using `middleware.ts`
-- Session-aware `Navbar`
-- Client-side `useAuth` hook
-- Simple number guessing game for logged-in users
-- Dev/prod separation with Docker
+---
+
+## 🚀 Production Setup
+
+### 1. `.env.production`
+
+```env
+DATABASE_URL=postgresql://postgres:password@db:5432/nextauth
+JWT_SECRET=your-production-secret
+```
+
+### 2. Build and Start
+
+```bash
+docker compose up --build -d
+```
 
 ---
 
@@ -82,137 +91,11 @@ App: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🚀 Production Setup
-
-### 1. Docker Compose
-
-Create/modify your `docker-compose.yml`:
-
-```yaml
-version: "3.8"
-
-services:
-  db:
-    image: postgres:16
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: nextauth
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  web:
-    build: .
-    container_name: nextjs-app
-    depends_on:
-      - db
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    env_file:
-      - .env.production
-
-volumes:
-  pgdata:
-```
-
-### 2. `.env.production`
-
-```env
-DATABASE_URL=postgresql://postgres:password@db:5432/nextauth
-JWT_SECRET=your-production-secret
-```
-
-### 3. `Dockerfile`
-
-```Dockerfile
-FROM node:18-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-RUN npm run build
-
-EXPOSE 3000
-
-CMD ["npm", "run", "start"]
-```
-
-### 4. Build and Start
-
-```bash
-docker compose up --build
-```
-
-### 5. Migrate & Seed
-
-```bash
-docker compose exec web npx prisma migrate deploy
-docker compose exec web npx tsx prisma/seed.ts
-```
-
----
-
-## 📁 Project Structure
-
-```
-components/
-  Navbar.tsx
-  AuthForm.tsx
-hooks/
-  useAuth.ts
-middleware.ts
-pages/
-  api/
-    auth/
-      login.ts
-      logout.ts
-      me.ts
-      register.ts
-  dashboard.tsx
-  index.tsx
-  login.tsx
-  register.tsx
-lib/
-  auth.ts
-  prisma.ts
-prisma/
-  schema.prisma
-.env
-.env.production
-```
-
----
-
-## ✅ Features
-
-- 🔐 JWT in HTTP-only cookies
-- 👮 Admin-only route (`/dashboard`) with dynamic messaging (not redirects)
-- 🎮 Number guessing game (5 attempts only)
-- 🔁 Auth-aware navbar and logout
-- 💻 Dev & prod database isolation
-
----
-
 ## 🧪 Testing
 
 You can test login with the seeded admin user:
 
 ```
-email: admin@example.com
-password: admin123
+email: administrator@orion.xyz
+password: adminSup3rS3cur3P@ssw0rd
 ```
-
----
-
-## 📜 License
-
-MIT
